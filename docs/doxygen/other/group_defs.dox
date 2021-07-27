@@ -1,0 +1,7 @@
+/*!
+ * \defgroup block GNU Radio TRAFFIC_GEN C++ Signal Processing Blocks
+ * \brief All C++ blocks that can be used from the TRAFFIC_GEN GNU Radio
+ *        module are listed here or in the subcategories below.
+ *
+ */
+
