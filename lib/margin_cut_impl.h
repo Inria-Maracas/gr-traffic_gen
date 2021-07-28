@@ -32,12 +32,13 @@ namespace gr {
       int m_head_margin;
       int m_end_margin;
       std::string m_tag_name;
+      bool m_zero_fill;
 
      protected:
       int calculate_output_stream_length(const gr_vector_int &ninput_items);
 
      public:
-      margin_cut_impl(int head_margin, int end_margin, std::string tag_name);
+      margin_cut_impl(int head_margin, int end_margin, std::string tag_name, bool zero_fill);
       ~margin_cut_impl();
 
       // Where all the action really happens

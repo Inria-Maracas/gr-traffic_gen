@@ -45,7 +45,7 @@ namespace gr {
        * class. traffic_gen::margin_cut::make is the public interface for
        * creating new instances.
        */
-      static sptr make(int head_margin, int end_margin, std::string tag_name);
+      static sptr make(int head_margin, int end_margin, std::string tag_name, bool zero_fill);
     };
 
   } // namespace traffic_gen

@@ -17,6 +17,9 @@ parameters:
 - id: tag_name
   label: Tag name
   dtype: std::string
+- id: zero_fill
+  label: Keep margins with zeros
+  dtype: bool
 
 inputs:
 - label: in
