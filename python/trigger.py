@@ -77,7 +77,7 @@ class trigger(gr.sync_block):
         out = output_items[0]
 
         if self.pack_start:
-            print("sending",number)
+            print("sending",self.samples_to_send)
             a = pmt.make_dict()
             a = pmt.dict_add(a, pmt.intern("resamp_ratio"), pmt.from_float(self.resamp_ratio))
             self.message_port_pub(pmt.intern("resamp"),a)

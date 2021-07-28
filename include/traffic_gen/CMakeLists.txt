@@ -23,5 +23,6 @@
 ########################################################################
 install(FILES
     api.h
-    margin_cut.h DESTINATION include/traffic_gen
+    margin_cut.h
+    mmse_resampler_cc.h DESTINATION include/traffic_gen
 )

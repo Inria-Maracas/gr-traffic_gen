@@ -1,0 +1,44 @@
+id: traffic_gen_mmse_resampler_cc
+label: Fractional Resampler
+category: '[traffic_gen]'
+flags: [ python, cpp ]
+
+parameters:
+-   id: type
+    label: Type
+    dtype: enum
+    options: [complex, float]
+    option_attributes:
+        fcn: [cc, ff]
+    hide: part
+-   id: phase_shift
+    label: Phase Shift
+    dtype: real
+-   id: resamp_ratio
+    label: Resampling Ratio
+    dtype: real
+
+inputs:
+-   domain: stream
+    dtype: ${ type }
+-   label: rate
+    domain: stream
+    dtype: float
+    optional: true
+-   domain: message
+    id: msg_in
+    optional: true
+
+outputs:
+-   domain: stream
+    dtype: ${ type }
+
+templates:
+    imports: import traffic_gen
+    make: traffic_gen.mmse_resampler_${type.fcn}(${phase_shift}, ${resamp_ratio})
+    callbacks:
+    - set_resamp_ratio(${resamp_ratio})
+
+#  'file_format' specifies the version of the GRC yml format used in the file
+#  and should usually not be changed.
+file_format: 1

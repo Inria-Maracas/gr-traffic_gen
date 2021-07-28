@@ -25,6 +25,7 @@ include(GrPlatform) #define LIB_SUFFIX
 
 list(APPEND traffic_gen_sources
     margin_cut_impl.cc
+    mmse_resampler_cc_impl.cc
 )
 
 set(traffic_gen_sources "${traffic_gen_sources}" PARENT_SCOPE)
@@ -34,7 +35,7 @@ if(NOT traffic_gen_sources)
 endif(NOT traffic_gen_sources)
 
 add_library(gnuradio-traffic_gen SHARED ${traffic_gen_sources})
-target_link_libraries(gnuradio-traffic_gen gnuradio::gnuradio-runtime)
+target_link_libraries(gnuradio-traffic_gen gnuradio::gnuradio-runtime gnuradio::gnuradio-blocks gnuradio::gnuradio-fft gnuradio::gnuradio-filter)
 target_include_directories(gnuradio-traffic_gen
     PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>
     PUBLIC $<INSTALL_INTERFACE:include>
