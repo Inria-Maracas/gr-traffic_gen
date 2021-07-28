@@ -29,13 +29,15 @@ namespace gr {
     class margin_cut_impl : public margin_cut
     {
      private:
-      // Nothing to declare in this block.
+      int m_head_margin;
+      int m_end_margin;
+      std::string m_tag_name;
 
      protected:
       int calculate_output_stream_length(const gr_vector_int &ninput_items);
 
      public:
-      margin_cut_impl();
+      margin_cut_impl(int head_margin, int end_margin, std::string tag_name);
       ~margin_cut_impl();
 
       // Where all the action really happens
