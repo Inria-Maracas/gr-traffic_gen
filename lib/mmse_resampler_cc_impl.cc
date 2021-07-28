@@ -58,6 +58,8 @@ namespace gr {
       message_port_register_in(pmt::intern("msg_in"));
       set_msg_handler(pmt::intern("msg_in"),
                       [this](pmt::pmt_t msg) { this->handle_msg(msg); });
+
+      set_tag_propagation_policy(TPP_CUSTOM);
     }
 
     /*
@@ -105,8 +107,34 @@ namespace gr {
       int ii = 0; // input index
       int oo = 0; // output index
 
+      // Get tag with input length
+      uint64_t abs_N, end_N;
+      std::vector<tag_t> tags;
+      std::vector<tag_t>::iterator it;
+      abs_N = nitems_read(0);
+      end_N = abs_N + noutput_items;
+      tags.clear();
+      get_tags_in_range(tags, 0, abs_N, end_N);
+
+
       if (ninput_items.size() == 1) {
-          while (oo < noutput_items) {
+          it = tags.begin();
+          while (oo < noutput_items && ii < ninput_items[0]) {
+              if (!tags.empty() && it->offset - abs_N <= ii) {
+                printf("%s\n", "Seen a tag");
+                tag_t tag;
+                tag.offset = nitems_written(0) + oo;
+                tag.key = it->key;
+                tag.value = it->value;
+                add_item_tag(0, tag);
+                if (it->key==pmt::intern("resamp_ratio")){
+                  set_resamp_ratio(pmt::to_float(it->value));
+                }
+                tags.erase(it);
+                it = tags.begin();
+                continue;
+              }
+
               out[oo++] = d_resamp->interpolate(&in[ii], static_cast<float>(d_mu));
 
               double s = d_mu + d_mu_inc;
@@ -117,7 +145,7 @@ namespace gr {
           }
 
           consume_each(ii);
-          return noutput_items;
+          return oo;
       }
 
       else {
@@ -151,6 +179,7 @@ namespace gr {
     void mmse_resampler_cc_impl::set_resamp_ratio(float resamp_ratio)
     {
         d_mu_inc = static_cast<double>(resamp_ratio);
+        set_inverse_relative_rate(d_mu_inc);
     }
   } /* namespace traffic_gen */
 } /* namespace gr */

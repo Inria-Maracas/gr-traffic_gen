@@ -15,7 +15,7 @@ PACKETDATA = np.ones(1, dtype=np.uint8)*0
 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, 0)
 
 
-PACKETDATA = np.array([10, 0.34, 0.001], dtype=np.float64).tobytes()
+PACKETDATA = np.array([10, 3, 0.001], dtype=np.float64).tobytes()
 # IPADDR = ip_base+str(node)
 
 try:

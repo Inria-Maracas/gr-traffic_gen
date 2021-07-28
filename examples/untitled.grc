@@ -88,7 +88,7 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
-    max: '2'
+    max: 2**4
     maxoutbuf: '0'
     min: '0'
     minoutbuf: '0'
@@ -210,11 +210,11 @@ blocks:
     style8: '1'
     style9: '1'
     tr_chan: '0'
-    tr_delay: '0'
+    tr_delay: 0.1*(160/samp_rate)
     tr_level: '0.0'
-    tr_mode: qtgui.TRIG_MODE_FREE
+    tr_mode: qtgui.TRIG_MODE_TAG
     tr_slope: qtgui.TRIG_SLOPE_POS
-    tr_tag: '""'
+    tr_tag: '"start_pack"'
     type: complex
     update_time: '0.10'
     width1: '1'
@@ -282,7 +282,6 @@ connections:
 - [traffic_gen_mmse_resampler_cc_0, '0', blocks_tag_debug_0, '0']
 - [traffic_gen_mmse_resampler_cc_0, '0', qtgui_time_sink_x_0, '0']
 - [traffic_gen_trigger_0, '0', traffic_gen_mmse_resampler_cc_0, '0']
-- [traffic_gen_trigger_0, resamp, traffic_gen_mmse_resampler_cc_0, msg_in]
 
 metadata:
   file_format: 1

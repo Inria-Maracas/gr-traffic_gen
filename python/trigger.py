@@ -81,7 +81,8 @@ class trigger(gr.sync_block):
             a = pmt.make_dict()
             a = pmt.dict_add(a, pmt.intern("resamp_ratio"), pmt.from_float(self.resamp_ratio))
             self.message_port_pub(pmt.intern("resamp"),a)
-            self.add_item_tag(0, self.nitems_written(0), pmt.intern(self.tag_name), pmt.to_pmt(int(self.samples_to_send)))
+            self.add_item_tag(0, self.nitems_written(0), pmt.intern("resamp_ratio"), pmt.from_float(self.resamp_ratio))
+            self.add_item_tag(0, self.nitems_written(0), pmt.intern(self.tag_name), pmt.to_pmt(int(self.samples_to_send/self.resamp_ratio)))
             self.pack_start = False
 
         to_copy = min(self.samples_to_send, in0.shape[0])
