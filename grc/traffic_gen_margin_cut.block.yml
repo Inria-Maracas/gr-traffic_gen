@@ -1,25 +1,29 @@
 id: traffic_gen_margin_cut
-label: margin_cut
-category: '[traffic_gen]'
+label: Margin cut
+category: '[Traffic_gen]'
 
 templates:
   imports: import traffic_gen
-  make: traffic_gen.margin_cut()
+  make: traffic_gen.margin_cut(${head_margin}, ${end_margin}, ${tag_name}, ${zero_fill})
 
 
 parameters:
 - id: head_margin
   label: Head margin
   dtype: int
+  default: 30
 - id: end_margin
   label: End margin
   dtype: int
+  default: 30
 - id: tag_name
   label: Tag name
-  dtype: std::string
+  dtype: string
+  default: 'packet_len'
 - id: zero_fill
   label: Keep margins with zeros
   dtype: bool
+  default: true
 
 inputs:
 - label: in

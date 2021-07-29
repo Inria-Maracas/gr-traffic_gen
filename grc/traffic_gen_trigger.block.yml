@@ -1,6 +1,6 @@
 id: traffic_gen_trigger
 label: Trigger
-category: '[traffic_gen]'
+category: '[Traffic_gen]'
 
 templates:
   imports: import traffic_gen
@@ -24,11 +24,11 @@ parameters:
 - id: tag_name
   label: Tag name
   dtype: string
-  default: 7000
+  default: 'packet_len'
 - id: margin
   label: Margin
   dtype: int
-  default: 3000
+  default: 30
 
 #  Make one 'inputs' list entry per input and one 'outputs' list entry per output.
 #  Keys include:

@@ -21,7 +21,6 @@
 
 import numpy as np
 import pmt
-import struct
 from gnuradio import gr
 import socket
 import threading
@@ -35,7 +34,6 @@ class trigger(gr.sync_block):
             name="trigger",
             in_sig=[np.complex64, ],
             out_sig=[np.complex64, ])
-
 
         self.ip_addr = ip_addr
         self.port = port
@@ -66,7 +64,7 @@ class trigger(gr.sync_block):
         while 1:
             data = self.s.recv(100)
             recieved = np.fromstring(data, dtype=np.float64)
-            self.samples_to_send = int(recieved[0] + self.margin)
+            self.samples_to_send = int(recieved[0] + 2*self.margin)
             self.resamp_ratio = recieved[1]
             self.freq_shift = recieved[2]
             self.pack_start = True

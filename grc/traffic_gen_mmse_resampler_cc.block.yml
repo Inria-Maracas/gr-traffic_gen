@@ -1,6 +1,6 @@
 id: traffic_gen_mmse_resampler_cc
 label: Fractional Resampler
-category: '[traffic_gen]'
+category: '[Traffic_gen]'
 flags: [ python, cpp ]
 
 parameters:
