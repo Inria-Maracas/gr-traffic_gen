@@ -21,5 +21,6 @@
 install(FILES
     traffic_gen_trigger.block.yml
     traffic_gen_margin_cut.block.yml
-    traffic_gen_mmse_resampler_cc.block.yml DESTINATION share/gnuradio/grc/blocks
+    traffic_gen_mmse_resampler_cc.block.yml
+    traffic_gen_annotator.block.yml DESTINATION share/gnuradio/grc/blocks
 )

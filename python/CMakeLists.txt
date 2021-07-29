@@ -32,7 +32,8 @@ endif()
 GR_PYTHON_INSTALL(
     FILES
     __init__.py
-    trigger.py DESTINATION ${GR_PYTHON_DIR}/traffic_gen
+    trigger.py
+    annotator.py DESTINATION ${GR_PYTHON_DIR}/traffic_gen
 )
 
 ########################################################################
@@ -45,3 +46,4 @@ set(GR_TEST_PYTHON_DIRS ${CMAKE_BINARY_DIR}/swig)
 GR_ADD_TEST(qa_trigger ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_trigger.py)
 GR_ADD_TEST(qa_margin_cut ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_margin_cut.py)
 GR_ADD_TEST(qa_mmse_resampler_cc ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_mmse_resampler_cc.py)
+GR_ADD_TEST(qa_annotator ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_annotator.py)
