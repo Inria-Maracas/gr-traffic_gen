@@ -11,7 +11,7 @@ options:
     gen_linking: dynamic
     generate_options: qt_gui
     hier_block_src_path: '.:'
-    id: testing_pdu
+    id: tx_graph
     max_nouts: '0'
     output_language: python
     placement: (0,0)
@@ -22,7 +22,7 @@ options:
     run_options: prompt
     sizing_mode: fixed
     thread_safe_setters: ''
-    title: Testing PDU utils
+    title: Transmitter
   states:
     bus_sink: false
     bus_source: false
@@ -42,14 +42,14 @@ blocks:
     rangeType: float
     start: '0'
     step: '1'
-    stop: '100'
+    stop: '1000'
     value: '50'
     widget: counter_slider
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [296, 28.0]
+    coordinate: [288, 12.0]
     rotation: 0
     state: true
 - name: qam_const
@@ -74,7 +74,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: '32000'
+    value: '100000'
   states:
     bus_sink: false
     bus_source: false
@@ -82,6 +82,23 @@ blocks:
     coordinate: [184, 12]
     rotation: 0
     state: enabled
+- name: analog_const_source_x_0
+  id: analog_const_source_x
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    const: '20'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    type: complex
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [560, 148.0]
+    rotation: 0
+    state: disabled
 - name: analog_random_source_x_0
   id: analog_random_source_x
   parameters:
@@ -101,7 +118,154 @@ blocks:
     bus_structure: null
     coordinate: [120, 212.0]
     rotation: 0
+    state: enabled
+- name: analog_sig_source_x_0
+  id: analog_sig_source_x
+  parameters:
+    affinity: ''
+    alias: ''
+    amp: '0.001'
+    comment: ''
+    freq: '1000'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    offset: '0'
+    phase: '0'
+    samp_rate: samp_rate
+    type: complex
+    waveform: analog.GR_COS_WAVE
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [688, 20.0]
+    rotation: 0
     state: true
+- name: blocks_burst_tagger_0
+  id: blocks_burst_tagger
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    false_key: burt
+    false_value: 'False'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    true_key: burt
+    true_value: 'True'
+    type: complex
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1296, 420.0]
+    rotation: 0
+    state: disabled
+- name: blocks_complex_to_mag_squared_0
+  id: blocks_complex_to_mag_squared
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [768, 528.0]
+    rotation: 0
+    state: enabled
+- name: blocks_float_to_complex_0
+  id: blocks_float_to_complex
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1432, 608.0]
+    rotation: 0
+    state: true
+- name: blocks_float_to_short_0
+  id: blocks_float_to_short
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    scale: '100'
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1128, 524.0]
+    rotation: 0
+    state: disabled
+- name: blocks_moving_average_xx_0
+  id: blocks_moving_average_xx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    length: '10'
+    max_iter: '4000'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    scale: 1/10
+    type: float
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [944, 500.0]
+    rotation: 0
+    state: enabled
+- name: blocks_null_source_0
+  id: blocks_null_source
+  parameters:
+    affinity: ''
+    alias: ''
+    bus_structure_source: '[[0,],]'
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_outputs: '1'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [752, 112.0]
+    rotation: 0
+    state: disabled
+- name: blocks_short_to_float_0
+  id: blocks_short_to_float
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    scale: '0.01'
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1264, 608.0]
+    rotation: 0
+    state: disabled
 - name: blocks_tag_debug_0
   id: blocks_tag_debug
   parameters:
@@ -118,9 +282,28 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1112, 352.0]
+    coordinate: [1712, 404.0]
     rotation: 0
-    state: true
+    state: disabled
+- name: blocks_throttle_0
+  id: blocks_throttle
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    ignoretag: 'True'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    samples_per_second: samp_rate
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [896, 156.0]
+    rotation: 0
+    state: enabled
 - name: digital_chunks_to_symbols_xx_0_0
   id: digital_chunks_to_symbols_xx
   parameters:
@@ -195,8 +378,8 @@ blocks:
     marker8: '-1'
     marker9: '-1'
     name: '""'
-    nconnections: '1'
-    size: '160'
+    nconnections: '2'
+    size: '1024'
     srate: samp_rate
     stemplot: 'False'
     style1: '1'
@@ -209,12 +392,12 @@ blocks:
     style7: '1'
     style8: '1'
     style9: '1'
-    tr_chan: '0'
-    tr_delay: 0.1*(160/samp_rate)
-    tr_level: '0.0'
-    tr_mode: qtgui.TRIG_MODE_TAG
+    tr_chan: '2'
+    tr_delay: 1*(160/samp_rate)
+    tr_level: '0.15'
+    tr_mode: qtgui.TRIG_MODE_FREE
     tr_slope: qtgui.TRIG_SLOPE_POS
-    tr_tag: '"start_pack"'
+    tr_tag: '"burt"'
     type: complex
     update_time: '0.10'
     width1: '1'
@@ -235,9 +418,24 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1000, 220.0]
+    coordinate: [1512, 284.0]
     rotation: 0
-    state: true
+    state: enabled
+- name: traffic_gen_insert_burst_0
+  id: traffic_gen_insert_burst
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1088, 208.0]
+    rotation: 0
+    state: enabled
 - name: traffic_gen_mmse_resampler_cc_0
   id: traffic_gen_mmse_resampler_cc
   parameters:
@@ -255,7 +453,7 @@ blocks:
     bus_structure: null
     coordinate: [792, 208.0]
     rotation: 0
-    state: true
+    state: enabled
 - name: traffic_gen_trigger_0
   id: traffic_gen_trigger
   parameters:
@@ -274,13 +472,31 @@ blocks:
     bus_structure: null
     coordinate: [552, 208.0]
     rotation: 0
-    state: true
+    state: enabled
 
 connections:
+- [analog_const_source_x_0, '0', blocks_throttle_0, '0']
 - [analog_random_source_x_0, '0', digital_chunks_to_symbols_xx_0_0, '0']
+- [analog_sig_source_x_0, '0', blocks_throttle_0, '0']
+- [blocks_burst_tagger_0, '0', blocks_tag_debug_0, '0']
+- [blocks_burst_tagger_0, '0', qtgui_time_sink_x_0, '0']
+- [blocks_complex_to_mag_squared_0, '0', blocks_moving_average_xx_0, '0']
+- [blocks_float_to_complex_0, '0', qtgui_time_sink_x_0, '1']
+- [blocks_float_to_short_0, '0', blocks_burst_tagger_0, '1']
+- [blocks_float_to_short_0, '0', blocks_short_to_float_0, '0']
+- [blocks_moving_average_xx_0, '0', blocks_float_to_complex_0, '0']
+- [blocks_moving_average_xx_0, '0', blocks_float_to_complex_0, '1']
+- [blocks_moving_average_xx_0, '0', blocks_float_to_short_0, '0']
+- [blocks_null_source_0, '0', blocks_throttle_0, '0']
+- [blocks_short_to_float_0, '0', blocks_float_to_complex_0, '0']
+- [blocks_short_to_float_0, '0', blocks_float_to_complex_0, '1']
+- [blocks_throttle_0, '0', traffic_gen_insert_burst_0, '0']
 - [digital_chunks_to_symbols_xx_0_0, '0', traffic_gen_trigger_0, '0']
-- [traffic_gen_mmse_resampler_cc_0, '0', blocks_tag_debug_0, '0']
-- [traffic_gen_mmse_resampler_cc_0, '0', qtgui_time_sink_x_0, '0']
+- [traffic_gen_insert_burst_0, '0', blocks_burst_tagger_0, '0']
+- [traffic_gen_insert_burst_0, '0', blocks_complex_to_mag_squared_0, '0']
+- [traffic_gen_insert_burst_0, '0', blocks_tag_debug_0, '0']
+- [traffic_gen_insert_burst_0, '0', qtgui_time_sink_x_0, '0']
+- [traffic_gen_mmse_resampler_cc_0, '0', traffic_gen_insert_burst_0, '1']
 - [traffic_gen_trigger_0, '0', traffic_gen_mmse_resampler_cc_0, '0']
 
 metadata:

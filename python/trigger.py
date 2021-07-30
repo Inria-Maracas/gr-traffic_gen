@@ -68,7 +68,7 @@ class trigger(gr.sync_block):
             self.resamp_ratio = recieved[1]
             self.freq_shift = recieved[2]
             self.pack_start = True
-            print(f"Transmitting packet len = {self.samples_to_send}")
+            print(f"Transmitting packet len = {self.samples_to_send}, resamp={self.resamp_ratio}")
 
     def work(self, input_items, output_items):
         in0 = input_items[0]
@@ -80,7 +80,9 @@ class trigger(gr.sync_block):
             a = pmt.dict_add(a, pmt.intern("resamp_ratio"), pmt.from_float(self.resamp_ratio))
             self.message_port_pub(pmt.intern("resamp"),a)
             self.add_item_tag(0, self.nitems_written(0), pmt.intern("resamp_ratio"), pmt.from_float(self.resamp_ratio))
-            self.add_item_tag(0, self.nitems_written(0), pmt.intern(self.tag_name), pmt.to_pmt(int(self.samples_to_send/self.resamp_ratio)))
+            self.add_item_tag(0, self.nitems_written(0), pmt.intern(self.tag_name), pmt.from_uint64(int((self.samples_to_send-self.margin)/self.resamp_ratio)))
+            # self.add_item_tag(0, self.nitems_written(0), pmt.intern("burst"), pmt.to_pmt(True))
+            # self.add_item_tag(0, self.nitems_written(0)+int(self.samples_to_send-1), pmt.intern("burst"), pmt.to_pmt(False))
             self.pack_start = False
 
         to_copy = min(self.samples_to_send, in0.shape[0])
