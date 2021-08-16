@@ -47,3 +47,4 @@ GR_ADD_TEST(qa_trigger ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_trigg
 GR_ADD_TEST(qa_margin_cut ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_margin_cut.py)
 GR_ADD_TEST(qa_mmse_resampler_cc ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_mmse_resampler_cc.py)
 GR_ADD_TEST(qa_annotator ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_annotator.py)
+GR_ADD_TEST(qa_insert_burst ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_insert_burst.py)

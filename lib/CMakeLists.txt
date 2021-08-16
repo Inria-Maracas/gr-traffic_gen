@@ -26,6 +26,7 @@ include(GrPlatform) #define LIB_SUFFIX
 list(APPEND traffic_gen_sources
     margin_cut_impl.cc
     mmse_resampler_cc_impl.cc
+    insert_burst_impl.cc
 )
 
 set(traffic_gen_sources "${traffic_gen_sources}" PARENT_SCOPE)

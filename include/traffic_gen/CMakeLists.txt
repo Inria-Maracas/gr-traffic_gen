@@ -24,5 +24,6 @@
 install(FILES
     api.h
     margin_cut.h
-    mmse_resampler_cc.h DESTINATION include/traffic_gen
+    mmse_resampler_cc.h
+    insert_burst.h DESTINATION include/traffic_gen
 )
