@@ -1,7 +1,6 @@
 options:
   parameters:
     author: cyrille
-    catch_exceptions: 'True'
     category: '[GRC Hier Blocks]'
     cmake_opt: ''
     comment: ''
@@ -23,6 +22,7 @@ options:
     sizing_mode: fixed
     thread_safe_setters: ''
     title: Testing PDU utils
+    window_size: ''
   states:
     bus_sink: false
     bus_source: false
@@ -39,6 +39,7 @@ blocks:
     gui_hint: ''
     label: Margin
     min_len: '200'
+    orient: Qt.Horizontal
     rangeType: float
     start: '0'
     step: '1'
