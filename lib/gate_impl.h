@@ -18,29 +18,24 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef INCLUDED_TRAFFIC_GEN_INSERT_BURST_IMPL_H
-#define INCLUDED_TRAFFIC_GEN_INSERT_BURST_IMPL_H
+#ifndef INCLUDED_TRAFFIC_GEN_GATE_IMPL_H
+#define INCLUDED_TRAFFIC_GEN_GATE_IMPL_H
 
-#include <traffic_gen/insert_burst.h>
+#include <traffic_gen/gate.h>
 
 namespace gr {
   namespace traffic_gen {
 
-    class insert_burst_impl : public insert_burst
+    class gate_impl : public gate
     {
      private:
-      bool d_burst;
-      uint64_t d_copy_left;
-      std::string m_tag_name;
-      uint64_t m_packet_length;
-      uint64_t m_packet_index;
-      uint64_t m_total_index;
-      int m_end_margin;
-      bool m_zero_fill;
+      uint64_t m_total_number_sample;
+      uint64_t m_index;
+      bool m_generation_ongoing;
 
      public:
-      insert_burst_impl(std::string tag_name, int end_margin, bool zero_fill);
-      ~insert_burst_impl();
+      gate_impl(int total_number_of_sample);
+      ~gate_impl();
 
       // Where all the action really happens
       void forecast (int noutput_items, gr_vector_int &ninput_items_required);
@@ -55,4 +50,5 @@ namespace gr {
   } // namespace traffic_gen
 } // namespace gr
 
-#endif /* INCLUDED_TRAFFIC_GEN_INSERT_BURST_IMPL_H */
+#endif /* INCLUDED_TRAFFIC_GEN_GATE_IMPL_H */
+

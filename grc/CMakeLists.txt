@@ -17,11 +17,13 @@
 # along with GNU Radio; see the file COPYING.  If not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street,
 # Boston, MA 02110-1301, USA.
-
 install(FILES
     traffic_gen_trigger.block.yml
-    traffic_gen_margin_cut.block.yml
     traffic_gen_mmse_resampler_cc.block.yml
     traffic_gen_annotator.block.yml
-    traffic_gen_insert_burst.block.yml DESTINATION share/gnuradio/grc/blocks
+    traffic_gen_insert_burst.block.yml
+    traffic_gen_margincut.block.yml
+    traffic_gen_labelisator.block.yml
+    traffic_gen_gate.block.yml
+    traffic_gen_add.block.yml DESTINATION share/gnuradio/grc/blocks
 )

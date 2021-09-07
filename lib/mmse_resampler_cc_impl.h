@@ -32,9 +32,12 @@ namespace gr {
        double d_mu;
        double d_mu_inc;
        gr::filter::mmse_fir_interpolator_cc* d_resamp;
+       std::string m_tag_name;
+       int packet_sample_count;
+       int packet_length;
 
      public:
-      mmse_resampler_cc_impl(float phase_shift, float resamp_ratio);
+      mmse_resampler_cc_impl(float phase_shift, float resamp_ratio, std::string tag_name);
       ~mmse_resampler_cc_impl();
 
       void handle_msg(pmt::pmt_t msg);

@@ -45,7 +45,7 @@ namespace gr {
        * class. traffic_gen::insert_burst::make is the public interface for
        * creating new instances.
        */
-      static sptr make();
+      static sptr make(std::string tag_name, int end_margin, bool zero_fill);
     };
 
   } // namespace traffic_gen

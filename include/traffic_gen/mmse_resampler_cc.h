@@ -49,7 +49,7 @@ namespace gr {
        * \param phase_shift The phase shift of the output signal to the input
        * \param resamp_ratio The resampling ratio = input_rate / output_rate.
        */
-      static sptr make(float phase_shift, float resamp_ratio);
+      static sptr make(float phase_shift, float resamp_ratio, std::string tag_name);
 
       virtual float mu() const = 0;
       virtual float resamp_ratio() const = 0;

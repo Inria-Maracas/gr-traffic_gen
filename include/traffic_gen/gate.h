@@ -18,41 +18,38 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef INCLUDED_TRAFFIC_GEN_INSERT_BURST_IMPL_H
-#define INCLUDED_TRAFFIC_GEN_INSERT_BURST_IMPL_H
+#ifndef INCLUDED_TRAFFIC_GEN_GATE_H
+#define INCLUDED_TRAFFIC_GEN_GATE_H
 
-#include <traffic_gen/insert_burst.h>
+#include <traffic_gen/api.h>
+#include <gnuradio/block.h>
 
 namespace gr {
   namespace traffic_gen {
 
-    class insert_burst_impl : public insert_burst
+    /*!
+     * \brief <+description of block+>
+     * \ingroup traffic_gen
+     *
+     */
+    class TRAFFIC_GEN_API gate : virtual public gr::block
     {
-     private:
-      bool d_burst;
-      uint64_t d_copy_left;
-      std::string m_tag_name;
-      uint64_t m_packet_length;
-      uint64_t m_packet_index;
-      uint64_t m_total_index;
-      int m_end_margin;
-      bool m_zero_fill;
-
      public:
-      insert_burst_impl(std::string tag_name, int end_margin, bool zero_fill);
-      ~insert_burst_impl();
+      typedef boost::shared_ptr<gate> sptr;
 
-      // Where all the action really happens
-      void forecast (int noutput_items, gr_vector_int &ninput_items_required);
-
-      int general_work(int noutput_items,
-           gr_vector_int &ninput_items,
-           gr_vector_const_void_star &input_items,
-           gr_vector_void_star &output_items);
-
+      /*!
+       * \brief Return a shared_ptr to a new instance of traffic_gen::gate.
+       *
+       * To avoid accidental use of raw pointers, traffic_gen::gate's
+       * constructor is in a private implementation
+       * class. traffic_gen::gate::make is the public interface for
+       * creating new instances.
+       */
+      static sptr make(int total_number_of_sample);
     };
 
   } // namespace traffic_gen
 } // namespace gr
 
-#endif /* INCLUDED_TRAFFIC_GEN_INSERT_BURST_IMPL_H */
+#endif /* INCLUDED_TRAFFIC_GEN_GATE_H */
+

@@ -31,17 +31,17 @@ namespace gr {
   namespace traffic_gen {
 
     mmse_resampler_cc::sptr
-    mmse_resampler_cc::make(float phase_shift, float resamp_ratio)
+    mmse_resampler_cc::make(float phase_shift, float resamp_ratio, std::string tag_name)
     {
       return gnuradio::get_initial_sptr
-        (new mmse_resampler_cc_impl(phase_shift, resamp_ratio));
+        (new mmse_resampler_cc_impl(phase_shift, resamp_ratio, tag_name));
     }
 
 
     /*
      * The private constructor
      */
-    mmse_resampler_cc_impl::mmse_resampler_cc_impl(float phase_shift, float resamp_ratio)
+    mmse_resampler_cc_impl::mmse_resampler_cc_impl(float phase_shift, float resamp_ratio, std::string tag_name)
       : gr::block("mmse_resampler_cc",
               io_signature::make2(1, 2, sizeof(gr_complex), sizeof(float)),
               io_signature::make(1, 1, sizeof(gr_complex))),
@@ -60,6 +60,10 @@ namespace gr {
                       [this](pmt::pmt_t msg) { this->handle_msg(msg); });
 
       set_tag_propagation_policy(TPP_CUSTOM);
+
+      m_tag_name = tag_name;
+      packet_sample_count = 0;
+      packet_length = 0;
     }
 
     /*
@@ -90,8 +94,7 @@ namespace gr {
     {
       unsigned ninputs = ninput_items_required.size();
       for (unsigned i = 0; i < ninputs; i++) {
-          ninput_items_required[i] =
-              (int)ceil((noutput_items * d_mu_inc) + d_resamp->ntaps());
+        ninput_items_required[i] = (int)ceil((noutput_items * d_mu_inc) + d_resamp->ntaps());
       }
     }
 
@@ -110,61 +113,64 @@ namespace gr {
       // Get tag with input length
       uint64_t abs_N, end_N;
       std::vector<tag_t> tags;
+      tag_t tag_packet_length;
       std::vector<tag_t>::iterator it;
       abs_N = nitems_read(0);
       end_N = abs_N + noutput_items;
       tags.clear();
       get_tags_in_range(tags, 0, abs_N, end_N);
 
+      //std::cout << "Resemp GET tag IN " << abs_N << " | " << end_N  << "\n";
+      if (!tags.empty()) {
+        for (it = tags.begin(); it != tags.end(); ++it){
+          tag_t tag;
+          tag.offset = nitems_written(0);
+          tag.key = it->key;
+          tag.value = it->value;
 
-      if (ninput_items.size() == 1) {
-          it = tags.begin();
-          while (oo < noutput_items && ii < ninput_items[0]) {
-              if (!tags.empty() && it->offset - abs_N <= ii) {
-                printf("%s\n", "Seen a tag");
-                tag_t tag;
-                tag.offset = nitems_written(0) + oo;
-                tag.key = it->key;
-                tag.value = it->value;
-                add_item_tag(0, tag);
-                if (it->key==pmt::intern("resamp_ratio")){
-                  set_resamp_ratio(pmt::to_float(it->value));
-                }
-                tags.erase(it);
-                it = tags.begin();
-                continue;
-              }
-
-              out[oo++] = d_resamp->interpolate(&in[ii], static_cast<float>(d_mu));
-
-              double s = d_mu + d_mu_inc;
-              double f = floor(s);
-              int incr = (int)f;
-              d_mu = s - f;
-              ii += incr;
+          if (it->key==pmt::intern(m_tag_name)){
+            tag_packet_length = tag;
+          } 
+          else if (it->key==pmt::intern("resamp_ratio")){
+            set_resamp_ratio(pmt::to_float(it->value));
+            add_item_tag(0, tag);
           }
-
-          consume_each(ii);
-          return oo;
+          else {
+            add_item_tag(0, tag);
+          }
+        }
+        
+        int value = 0;
+        value = double(pmt::to_uint64(tag_packet_length.value))/ d_mu_inc;
+        tag_packet_length.value = pmt::from_uint64(value);
+        add_item_tag(0, tag_packet_length);
+        packet_sample_count = 0;
+        packet_length = value;
       }
 
-      else {
-          const float* rr = (const float*)input_items[1];
-          while (oo < noutput_items) {
-              out[oo++] = d_resamp->interpolate(&in[ii], static_cast<float>(d_mu));
-              d_mu_inc = static_cast<double>(rr[ii]);
 
-              double s = d_mu + d_mu_inc;
-              double f = floor(s);
-              int incr = (int)f;
-              d_mu = s - f;
-              ii += incr;
-          }
+      while (oo < noutput_items && ii < ninput_items[0]) {
 
-          set_inverse_relative_rate(d_mu_inc);
-          consume_each(ii);
-          return noutput_items;
+          out[oo++] = d_resamp->interpolate(&in[ii], static_cast<float>(d_mu));
+
+          double s = d_mu + d_mu_inc;
+          double f = floor(s);
+          int incr = (int)f;
+          d_mu = s - f;
+          ii += incr;
+          packet_sample_count += 1;
       }
+
+      consume_each(ii);
+
+      if (packet_sample_count == packet_length && packet_length != 0) {
+        // std::cout << "Resemp - produce : " << oo << " - input used/buffer : " << ii << "/" << ninput_items[0] << " - packet index : " << packet_sample_count <<  "\n";
+        std::cout << "Resamp - packet (" << packet_length << " samples / " << d_mu_inc << " ratio) processed\n";
+        packet_sample_count = 0;
+        packet_length = 0;
+      }
+      return oo;
+  
     }
 
     float mmse_resampler_cc_impl::mu() const { return static_cast<float>(d_mu); }

@@ -21,9 +21,9 @@
 
 from gnuradio import gr, gr_unittest
 from gnuradio import blocks
-import traffic_gen_swig as traffic_gen
+from labelisator import labelisator
 
-class qa_margin_cut(gr_unittest.TestCase):
+class qa_labelisator(gr_unittest.TestCase):
 
     def setUp(self):
         self.tb = gr.top_block()
@@ -38,4 +38,4 @@ class qa_margin_cut(gr_unittest.TestCase):
 
 
 if __name__ == '__main__':
-    gr_unittest.run(qa_margin_cut)
+    gr_unittest.run(qa_labelisator)

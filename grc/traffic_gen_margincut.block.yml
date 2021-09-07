@@ -1,11 +1,10 @@
-id: traffic_gen_margin_cut
-label: Margin cut
+id: traffic_gen_margincut
+label: Margin Cut 
 category: '[Traffic_gen]'
 
 templates:
   imports: import traffic_gen
-  make: traffic_gen.margin_cut(${head_margin}, ${end_margin}, ${tag_name}, ${zero_fill})
-
+  make: traffic_gen.margincut(${head_margin}, ${end_margin}, ${tag_name}, ${zero_fill})
 
 parameters:
 - id: head_margin

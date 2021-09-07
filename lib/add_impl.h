@@ -18,33 +18,26 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef INCLUDED_TRAFFIC_GEN_MARGIN_CUT_IMPL_H
-#define INCLUDED_TRAFFIC_GEN_MARGIN_CUT_IMPL_H
+#ifndef INCLUDED_TRAFFIC_GEN_ADD_IMPL_H
+#define INCLUDED_TRAFFIC_GEN_ADD_IMPL_H
 
-#include <traffic_gen/margin_cut.h>
+#include <traffic_gen/add.h>
 
 namespace gr {
   namespace traffic_gen {
 
-    class margin_cut_impl : public margin_cut
+    class add_impl : public add
     {
      private:
-      int m_head_margin;
-      int m_end_margin;
-      std::string m_tag_name;
-      bool m_zero_fill;
-
-     protected:
-      int calculate_output_stream_length(const gr_vector_int &ninput_items);
+      // Nothing to declare in this block.
 
      public:
-      margin_cut_impl(int head_margin, int end_margin, std::string tag_name, bool zero_fill);
-      ~margin_cut_impl();
+      add_impl();
+      ~add_impl();
 
       // Where all the action really happens
       int work(
               int noutput_items,
-              gr_vector_int &ninput_items,
               gr_vector_const_void_star &input_items,
               gr_vector_void_star &output_items
       );
@@ -53,5 +46,5 @@ namespace gr {
   } // namespace traffic_gen
 } // namespace gr
 
-#endif /* INCLUDED_TRAFFIC_GEN_MARGIN_CUT_IMPL_H */
+#endif /* INCLUDED_TRAFFIC_GEN_ADD_IMPL_H */
 

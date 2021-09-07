@@ -17,7 +17,7 @@ def argument_parser():
         "-r", "--rn_node", dest="rx", type=int, default=9,
         help="Set RX node number [default=%(default)r]")
     parser.add_argument(
-        "-w", "--wait_time", dest="time", type=float, default=0.01,
+        "-w", "--wait_time", dest="time", type=float, default=45,
         help="Set wait time between transmissions [default=%(default)r]")
     return parser
 
@@ -33,10 +33,11 @@ def main():
     tx_node = options.tx
     rx_node = options.rx
     SLEEP_TIME=options.time
-    possible_bw = np.array([0.01,0.05,0.1,0.2,0.5])
+    possible_bw = np.array([0.01,0.05,0.1,0.2,0.5,0.75,1])
     # initialize a socket, think of it as a cable
     # SOCK_DGRAM specifies that this is UDP
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, 0)
+    CURRENT_MAX_NBR_OF_MOD = 3
 
 
     time.sleep(1)
@@ -45,13 +46,14 @@ def main():
         time.sleep(SLEEP_TIME)
 
 
-        modulation = 0
-        pack_len = 100
-        bw_ratio = possible_bw[4]#[np.random.randint(5)]
-        freq_shift = 0
+        modulation = np.random.randint(0,CURRENT_MAX_NBR_OF_MOD)
+        pack_len = np.random.randint(5000,100000)#100000000
+        bw_ratio = np.random.random_sample()#possible_bw[np.random.randint(7)]
+        #bw_ratio = 1
+        freq_shift = 0#float(0.5)
 
         # Send to transmitter
-        PACKETDATA = np.array([pack_len, bw_ratio, freq_shift], dtype=np.float64).tobytes()
+        PACKETDATA = np.array([pack_len, bw_ratio, freq_shift, modulation], dtype=np.float64).tobytes()
         IPADDR = IPADDR#ip_base+str(tx_node)
         try:
             # send the command

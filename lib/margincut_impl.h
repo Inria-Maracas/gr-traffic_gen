@@ -18,38 +18,41 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef INCLUDED_TRAFFIC_GEN_MARGIN_CUT_H
-#define INCLUDED_TRAFFIC_GEN_MARGIN_CUT_H
+#ifndef INCLUDED_TRAFFIC_GEN_MARGINCUT_IMPL_H
+#define INCLUDED_TRAFFIC_GEN_MARGINCUT_IMPL_H
 
-#include <traffic_gen/api.h>
-#include <gnuradio/tagged_stream_block.h>
+#include <traffic_gen/margincut.h>
 
 namespace gr {
   namespace traffic_gen {
 
-    /*!
-     * \brief <+description of block+>
-     * \ingroup traffic_gen
-     *
-     */
-    class TRAFFIC_GEN_API margin_cut : virtual public gr::tagged_stream_block
+    class margincut_impl : public margincut
     {
-     public:
-      typedef boost::shared_ptr<margin_cut> sptr;
+     private:
+      int m_head_margin;
+      int m_end_margin;
+      std::string m_tag_name;
+      bool m_zero_fill;
+      int m_length_packet;
+      int m_index_packet;
 
-      /*!
-       * \brief Return a shared_ptr to a new instance of traffic_gen::margin_cut.
-       *
-       * To avoid accidental use of raw pointers, traffic_gen::margin_cut's
-       * constructor is in a private implementation
-       * class. traffic_gen::margin_cut::make is the public interface for
-       * creating new instances.
-       */
-      static sptr make(int head_margin, int end_margin, std::string tag_name, bool zero_fill);
+
+     public:
+      margincut_impl(int head_margin, int end_margin, std::string tag_name, bool zero_fill);
+      ~margincut_impl();
+
+      // Where all the action really happens
+      void forecast (int noutput_items, gr_vector_int &ninput_items_required);
+
+      int general_work(int noutput_items,
+           gr_vector_int &ninput_items,
+           gr_vector_const_void_star &input_items,
+           gr_vector_void_star &output_items);
+
     };
 
   } // namespace traffic_gen
 } // namespace gr
 
-#endif /* INCLUDED_TRAFFIC_GEN_MARGIN_CUT_H */
+#endif /* INCLUDED_TRAFFIC_GEN_MARGINCUT_IMPL_H */
 

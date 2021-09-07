@@ -34,4 +34,5 @@ except ImportError:
 # import any pure python here
 from .trigger import trigger
 from .annotator import annotator
+from .labelisator import labelisator
 #

@@ -1,0 +1,30 @@
+id: traffic_gen_add
+label: Add
+category: '[Traffic_gen]'
+
+templates:
+  imports: import traffic_gen
+  make: traffic_gen.add()
+
+
+inputs:
+- label: in
+  domain: stream
+  dtype: complex
+  vlen: 1
+  optional: 0
+- label: noise
+  domain: stream
+  dtype: complex
+  vlen: 1
+  optional: 0
+
+outputs:
+- label: out
+  domain: stream
+  dtype: complex
+  vlen: 1
+  optional: 0
+
+
+file_format: 1

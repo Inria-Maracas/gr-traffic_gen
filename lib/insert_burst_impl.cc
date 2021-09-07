@@ -29,24 +29,30 @@ namespace gr {
   namespace traffic_gen {
 
     insert_burst::sptr
-    insert_burst::make()
+    insert_burst::make(std::string tag_name, int end_margin, bool zero_fill)
     {
       return gnuradio::get_initial_sptr
-        (new insert_burst_impl());
+        (new insert_burst_impl(tag_name, end_margin, zero_fill));
     }
 
 
     /*
      * The private constructor
      */
-    insert_burst_impl::insert_burst_impl()
+    insert_burst_impl::insert_burst_impl(std::string tag_name, int end_margin, bool zero_fill)
       : gr::block("insert_burst",
               gr::io_signature::make(2, 2, sizeof(gr_complex)),
               gr::io_signature::make(1, 1, sizeof(gr_complex)))
     {
       d_burst=false;
       d_copy_left=0;
-      set_tag_propagation_policy(TPP_DONT);
+      m_tag_name = tag_name;
+      m_end_margin = end_margin;
+      m_zero_fill = zero_fill;
+
+      m_packet_length = 0;
+      m_packet_index = 0;
+      m_total_index = 0;
     }
 
     /*
@@ -59,8 +65,6 @@ namespace gr {
     void
     insert_burst_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
     {
-      ninput_items_required[0] = noutput_items;
-      ninput_items_required[1] = 0;
     }
 
     int
@@ -69,90 +73,93 @@ namespace gr {
                        gr_vector_const_void_star &input_items,
                        gr_vector_void_star &output_items)
     {
-      const gr_complex *in = (const gr_complex *) input_items[0];
-      const gr_complex *in1 = (const gr_complex *) input_items[1];
+      const gr_complex *in_0_continuous = (const gr_complex *) input_items[0];
+      const gr_complex *in_1_burst = (const gr_complex *) input_items[1];
       gr_complex *out = (gr_complex *) output_items[0];
 
-      // if (ninput_items[1]==0) {
-      //   printf("%s\n", "function called with empty in1 buffer");
+      // if (ninput_items[1] != 0) {
+      //   std::cout << "Insert Burst - Input 1 " << ninput_items[1] << " - packet index : " << m_packet_index << "/" << m_packet_length << "\n";
       // }
-      // Get tag with input length
+      uint64_t burst_start_offset = 0;
       uint64_t abs_N, end_N;
       std::vector<tag_t> tags;
       std::vector<tag_t>::iterator it;
-      abs_N = nitems_read(1);
+
+      // Get tag with input length
+      abs_N = nitems_read(1) ;
       end_N = abs_N + ninput_items[1];
       tags.clear();
-      get_tags_in_range(tags, 1, abs_N, end_N, pmt::intern("start_pack"));
-      // Check burst tags
-      uint64_t to_copy = 0;
-      uint64_t copy_start = 0;
+      get_tags_in_range(tags, 1, abs_N, end_N);   
+
       for (it = tags.begin(); it != tags.end(); ++it) {
-        printf("%s\n", "Seen start of burst");
-        d_copy_left = pmt::to_uint64(it->value);
-        copy_start = it->offset-abs_N;
-        tag_t tag;
-        tag.offset = nitems_written(0)+copy_start;
-        tag.key = it->key;
-        tag.value = it->value;
-        add_item_tag(0, tag);
-      }
-
-
-      uint64_t treated_0 = 0;
-      uint64_t treated_1 = 0;
-      if (d_copy_left>0) {
-        // printf("%s %d\n", "Copying input1", d_copy_left);
-        to_copy = std::min(ninput_items[1]-copy_start,d_copy_left);
-        if (copy_start>ninput_items[0]) {
-          printf("%s\n", "Aaaaagh, not enough in0 items");
-        }
-        treated_0 = to_copy+copy_start;
-        treated_1 = to_copy+copy_start;
-        memcpy(out, in, copy_start * input_signature()->sizeof_stream_item (0));
-        memcpy(out+copy_start, input_items[1]+copy_start, to_copy * input_signature()->sizeof_stream_item (0));
-        d_copy_left -= to_copy;
-
-        // Get tag with input length
-        abs_N = nitems_read(1)+copy_start;
-        end_N = abs_N + to_copy;
-        tags.clear();
-        get_tags_in_range(tags, 1, abs_N, end_N);
-        // Propagate tags from input one to output
-        for (it = tags.begin(); it != tags.end(); ++it) {
+        if (pmt::symbol_to_string(it->key) == m_tag_name){
+                    
+          burst_start_offset = it->offset - abs_N;
+          //std::cout << "Insert Burst - length tag at " << pmt::from_uint64(it->offset) << " for " << pmt::to_uint64(it->value) << "samples - burst start offset : " << burst_start_offset <<"\n";
+          
           tag_t tag;
-          tag.offset = nitems_written(0) +copy_start;
-          // printf("%d %d\n", it->offset, copy_start);
+          tag.offset = nitems_written(0);
           tag.key = it->key;
           tag.value = it->value;
-          // add_item_tag(0, tag);
-        }
-      }else{
-        // printf("%s\n", "Consuming in0");
-        treated_0 = ninput_items[0];
-        treated_1 = ninput_items[1];
-        memcpy(out, in, ninput_items[0] * input_signature()->sizeof_stream_item (0));
-      }
-      // abs_N = nitems_read(0);
-      // end_N = abs_N + treated_0;
-      // tags.clear();
-      // get_tags_in_range(tags, 0, abs_N, end_N);
-      // // Propagate tags from input zero to output
-      // for (it = tags.begin(); it != tags.end(); ++it) {
-      //   tag_t tag;
-      //   tag.offset = nitems_written(0)+(it->offset-abs_N);
-      //   tag.key = it->key;
-      //   tag.value = it->value;
-      //   add_item_tag(0, tag);
-      // }
+          add_item_tag(0, tag);
 
-      // Tell runtime system how many input items we consumed on
-      // each input stream.
-      consume(0,treated_0);
-      consume(1,treated_1);
-      // printf("%s %d %d \n", "Consuming input0 copy left", treated_0, d_copy_left);
-      // Tell runtime system how many output items we produced.
-      return treated_0;
+          if (m_packet_length != m_packet_index){
+            std::cout << "Insert Burst : Previous packet not finished" << m_packet_index << "/" << m_packet_length << "\n";
+          }
+          
+          m_packet_length = pmt::to_uint64(it->value);
+          m_packet_index = 0;
+        }
+        else{
+          tag_t tag;
+          tag.offset = nitems_written(0);
+          tag.key = it->key;
+          tag.value = it->value;
+          add_item_tag(0, tag);
+        }
+      }
+
+      d_copy_left = m_packet_length - m_packet_index;
+      uint64_t to_copy = std::min(d_copy_left, uint64_t(ninput_items[1] - burst_start_offset));
+
+      if (d_copy_left > 0 && to_copy > 0){
+        memcpy(out, &in_1_burst[burst_start_offset], to_copy * input_signature()->sizeof_stream_item(1));
+        consume_each(to_copy + burst_start_offset);
+
+        m_packet_index = m_packet_index + to_copy;
+        noutput_items = to_copy;
+
+        //std::cout << "Insert Burst - to copy : " << to_copy << " - index : " << m_packet_index << "/" << m_packet_length << " - input : " << ninput_items[1] << "\n";
+        if (m_packet_length == m_packet_index && m_packet_length != 0) {
+        //std::cout << "Margin cut - produce : " << sample_count << ", - input length : " << ninput_items[0] << ", Index packet : " << m_index_packet << "/" << m_length_packet << ", Cut packet : " << cut_sample_count << "\n";
+        std::cout << "Insert burst - packet (" << m_packet_length << " samples) processed\n";
+        m_packet_index = 0;
+        m_packet_length = 0;      
+        }
+      }
+      else if (d_copy_left == 0){
+        memcpy(out, in_0_continuous, ninput_items[0] * input_signature()->sizeof_stream_item(0));
+        consume(0, ninput_items[0]);
+        consume(1, 0);
+
+        noutput_items = ninput_items[0];
+        
+      }
+      else {
+        noutput_items = 0;
+        // If missing samples are in end_margin, we discard them
+        if (m_zero_fill && (d_copy_left) < m_end_margin) {
+          std::cout << "Insert burst - packet (" << m_packet_length << " samples) processed - " << d_copy_left <<" samples in end_margin were discarded\n";
+          m_packet_index = m_packet_length;
+
+        } 
+        // else if (m_zero_fill && (d_copy_left) >= m_end_margin) {
+        //   std::cout << "Insert burst - missing " << d_copy_left << " samples to finish packet";
+        // }
+      }
+      m_total_index += noutput_items;
+
+      return noutput_items;
     }
 
   } /* namespace traffic_gen */

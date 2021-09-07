@@ -33,7 +33,8 @@ GR_PYTHON_INSTALL(
     FILES
     __init__.py
     trigger.py
-    annotator.py DESTINATION ${GR_PYTHON_DIR}/traffic_gen
+    annotator.py
+    labelisator.py DESTINATION ${GR_PYTHON_DIR}/traffic_gen
 )
 
 ########################################################################
@@ -44,7 +45,9 @@ include(GrTest)
 set(GR_TEST_TARGET_DEPS gnuradio-traffic_gen)
 set(GR_TEST_PYTHON_DIRS ${CMAKE_BINARY_DIR}/swig)
 GR_ADD_TEST(qa_trigger ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_trigger.py)
-GR_ADD_TEST(qa_margin_cut ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_margin_cut.py)
 GR_ADD_TEST(qa_mmse_resampler_cc ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_mmse_resampler_cc.py)
 GR_ADD_TEST(qa_annotator ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_annotator.py)
 GR_ADD_TEST(qa_insert_burst ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_insert_burst.py)
+GR_ADD_TEST(qa_labelisator ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_labelisator.py)
+GR_ADD_TEST(qa_gate ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_gate.py)
+GR_ADD_TEST(qa_add ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_add.py)
